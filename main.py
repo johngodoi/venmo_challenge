@@ -41,6 +41,16 @@ class CreditCardException(Exception):
     pass
 
 
+class Friendship:
+
+    def __init__(self, actor, target):
+        self.actor = actor
+        self.target = target
+
+    def __str__(self):
+        return f'{self.actor.username} and {self.target.username} are now friends'
+
+
 class Payment:
 
     def __init__(self, amount, actor, target, note):
@@ -74,8 +84,11 @@ class User:
         return self.feed_history
 
     def add_friend(self, new_friend):
+        if new_friend in self.friends:
+            return
         self.friends.add(new_friend)
-        new_friend.friends.add(self)
+        self.add_to_feed(Friendship(actor=self, target=new_friend))
+        new_friend.add_friend(self)
 
     def add_to_balance(self, amount):
         self.balance += float(amount)
