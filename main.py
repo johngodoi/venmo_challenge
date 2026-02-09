@@ -110,7 +110,7 @@ class User:
             target.add_to_feed(Payment(amount, self, target, note))
         elif (self.balance < amount and self.balance > 0):
             remaining_amount = amount - self.balance
-            payment_with_balance = self.pay_with_balance(target=target, amount=amount, note=note)
+            payment_with_balance = self.pay_with_balance(target=target, amount=self.balance, note=note)
             payment_with_card = self.pay_with_card(target=target, amount=remaining_amount, note=note)
             self.add_to_feed(payment_with_balance)
             self.add_to_feed(payment_with_card)
