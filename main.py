@@ -212,6 +212,13 @@ class TestUser(unittest.TestCase):
         with self.assertRaises(CreditCardException):
             user.add_credit_card(credit_card_number='1234567890123456')
 
+    def test_payment_validation__self_payment(self):
+        user1 = User(username='valid_username1')
+        user1.add_credit_card(credit_card_number='4111111111111111')
+
+        with self.assertRaises(PaymentException):
+            user1.pay(user1, 10.00, "Invalid payment to self")
+
     def test_this_works(self):
         with self.assertRaises(UsernameException):
             raise UsernameException()
