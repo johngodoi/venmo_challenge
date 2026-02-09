@@ -49,7 +49,10 @@ class Payment:
         self.actor = actor
         self.target = target
         self.note = note
- 
+
+    def __str__(self):
+        return f'{self.actor.username} paid {self.target.username} ${self.amount:.2f} for {self.note}'
+
 
 class User:
 
@@ -63,6 +66,8 @@ class User:
         else:
             raise UsernameException('Username not valid.')
 
+    def add_to_feed(self, feed_item):
+        self.feed_history.append(feed_item)
 
     def retrieve_feed(self):
         return self.feed_history
@@ -87,17 +92,20 @@ class User:
     def pay(self, target, amount, note):
         if (self.balance >= amount):
             payment_with_balance = self.pay_with_balance(target=target, amount=amount, note=note)
-            self.feed_history.append(payment_with_balance)
-            target.
+            self.add_to_feed(payment_with_balance)
+            target.add_to_feed(Payment(amount, self, target, note))
         elif (self.balance < amount and self.balance > 0):
             remaining_amount = amount - self.balance
             payment_with_balance = self.pay_with_balance(target=target, amount=amount, note=note)
             payment_with_card = self.pay_with_card(target=target, amount=remaining_amount, note=note)
-            self.feed_history.append(payment_with_balance)
-            self.feed_history.append(payment_with_card)
+            self.add_to_feed(payment_with_balance)
+            self.add_to_feed(payment_with_card)
+            target.add_to_feed(Payment(amount, self, target, note))
+            target.add_to_feed(Payment(remaining_amount, self, target, note))
         else:
             payment_with_card = self.pay_with_card(target=target, amount=amount, note=note)
-            self.feed_history.append(payment_with_card)
+            self.add_to_feed(payment_with_card)
+            target.add_to_feed(Payment(amount, self, target, note))
 
     def pay_with_card(self, target, amount, note):
         amount = float(amount)
@@ -126,7 +134,7 @@ class User:
         elif amount <= 0.0:
             raise PaymentException('Amount must be a non-negative number.')
         
-        elif self.balance >= amount:
+        elif self.balance < amount:
             raise PaymentException('User has not enough balance for the payment')
         
         self.balance = self.balance - amount
@@ -154,10 +162,8 @@ class MiniVenmo:
         return user
 
     def render_feed(self, feed):
-        # Bobby paid Carol $5.00 for Coffee
-        # Carol paid Bobby $15.00 for Lunch
-        # TODO: add code here
-        pass
+        for feed_item in feed:
+            print(feed_item)
 
     @classmethod
     def run(cls):
@@ -189,4 +195,5 @@ class TestUser(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    unittest.main()
+    MiniVenmo.run()
+    # unittest.main()
