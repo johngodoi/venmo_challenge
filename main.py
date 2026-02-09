@@ -382,6 +382,9 @@ class TestUser(unittest.TestCase):
         user1.pay(user2, 5.00, "Coffee")
         venmo.render_feed(user1.retrieve_feed())
 
+    def test_mini_venmo__run(self):
+        MiniVenmo.run()
+
     def test_this_works(self):
         with self.assertRaises(UsernameException):
             raise UsernameException()
