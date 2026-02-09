@@ -273,6 +273,22 @@ class TestUser(unittest.TestCase):
         self.assertEqual(len(user1.friends), 1)
         self.assertEqual(len(user2.friends), 1)
 
+    def test_feed_retrieval(self):
+        user1 = User(username='valid_username1')
+        user2 = User(username='valid_username2')
+        user1.add_credit_card(credit_card_number='4111111111111111')
+
+        user1.pay(user2, 10.00, "Test payment")
+
+        feed = user1.retrieve_feed()
+
+        self.assertEqual(len(feed), 1)
+        self.assertIsInstance(feed[0], Payment)
+        self.assertEqual(feed[0].amount, 10.00)
+        self.assertEqual(feed[0].actor, user1)
+        self.assertEqual(feed[0].target, user2)
+        self.assertEqual(feed[0].note, "Test payment")
+
     def test_this_works(self):
         with self.assertRaises(UsernameException):
             raise UsernameException()
