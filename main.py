@@ -203,6 +203,10 @@ class MiniVenmo:
 
 class TestUser(unittest.TestCase):
 
+    def test_username_validation(self):
+        with self.assertRaises(UsernameException):
+            User(username='invalid username')
+
     def test_this_works(self):
         with self.assertRaises(UsernameException):
             raise UsernameException()
