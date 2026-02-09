@@ -243,6 +243,17 @@ class TestUser(unittest.TestCase):
         with self.assertRaises(PaymentException):
             user1.pay(user2, 10.00, "Invalid payment with not enough balance")
 
+    def test_payment_validation__valid_payment(self):
+        user1 = User(username='valid_username1')
+        user2 = User(username='valid_username2')
+        user1.add_credit_card(credit_card_number='4111111111111111')
+        user1.add_to_balance(5.00)
+
+        try:
+            user1.pay(user2, 10.00, "Valid payment")
+        except PaymentException:
+            self.fail("PaymentException raised unexpectedly!")
+
     def test_this_works(self):
         with self.assertRaises(UsernameException):
             raise UsernameException()
