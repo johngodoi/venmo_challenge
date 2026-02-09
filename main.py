@@ -60,6 +60,7 @@ class User:
         self.credit_card_number = None
         self.balance = 0.0
         self.feed_history = []
+        self.friends = set()
 
         if self._is_valid_username(username):
             self.username = username
@@ -73,8 +74,8 @@ class User:
         return self.feed_history
 
     def add_friend(self, new_friend):
-        # TODO: add code here
-        pass
+        self.friends.add(new_friend)
+        new_friend.friends.add(self)
 
     def add_to_balance(self, amount):
         self.balance += float(amount)
@@ -133,10 +134,10 @@ class User:
 
         elif amount <= 0.0:
             raise PaymentException('Amount must be a non-negative number.')
-        
+
         elif self.balance < amount:
             raise PaymentException('User has not enough balance for the payment')
-        
+
         self.balance = self.balance - amount
         payment = Payment(amount, self, target, note)
         target.add_to_balance(amount)
@@ -175,7 +176,7 @@ class MiniVenmo:
         try:
             # should complete using balance
             bobby.pay(carol, 5.00, "Coffee")
- 
+
             # should complete using card
             carol.pay(bobby, 15.00, "Lunch")
         except PaymentException as e:
