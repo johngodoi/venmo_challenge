@@ -263,6 +263,16 @@ class TestUser(unittest.TestCase):
         self.assertIn(user2, user1.friends)
         self.assertIn(user1, user2.friends)
 
+    def test_friendship_validation__duplicate_friend(self):
+        user1 = User(username='valid_username1')
+        user2 = User(username='valid_username2')
+
+        user1.add_friend(user2)
+        user1.add_friend(user2)
+
+        self.assertEqual(len(user1.friends), 1)
+        self.assertEqual(len(user2.friends), 1)
+
     def test_this_works(self):
         with self.assertRaises(UsernameException):
             raise UsernameException()
