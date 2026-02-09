@@ -316,6 +316,13 @@ class TestUser(unittest.TestCase):
         self.assertEqual(feed[0].actor, user1)
         self.assertEqual(feed[0].target, user2)
 
+    def test_credit_card_validation__duplicate_card(self):
+        user = User(username='valid_username')
+        user.add_credit_card(credit_card_number='4111111111111111')
+
+        with self.assertRaises(CreditCardException):
+            user.add_credit_card(credit_card_number='4242424242424242')
+
     def test_this_works(self):
         with self.assertRaises(UsernameException):
             raise UsernameException()
