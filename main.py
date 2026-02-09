@@ -331,6 +331,57 @@ class TestUser(unittest.TestCase):
         except CreditCardException:
             self.fail("CreditCardException raised unexpectedly!")
 
+    def test_payment__pay_with_balance_only(self):
+        user1 = User(username='valid_username1')
+        user2 = User(username='valid_username2')
+        user1.add_credit_card(credit_card_number='4111111111111111')
+        user1.add_to_balance(20.00)
+
+        user1.pay(user2, 10.00, "Covered by balance")
+
+        self.assertEqual(user1.balance, 10.00)
+        self.assertEqual(user2.balance, 10.00)
+        self.assertEqual(len(user1.retrieve_feed()), 1)
+        self.assertEqual(len(user2.retrieve_feed()), 1)
+
+    def test_payment_validation__self_payment_with_balance(self):
+        user1 = User(username='valid_username1')
+        user1.add_credit_card(credit_card_number='4111111111111111')
+        user1.add_to_balance(20.00)
+
+        with self.assertRaises(PaymentException):
+            user1.pay(user1, 10.00, "Self payment with balance")
+
+    def test_payment__str(self):
+        user1 = User(username='valid_username1')
+        user2 = User(username='valid_username2')
+        payment = Payment(10.00, user1, user2, "Coffee")
+
+        self.assertEqual(str(payment), "valid_username1 paid valid_username2 $10.00 for Coffee")
+
+    def test_friendship__str(self):
+        user1 = User(username='valid_username1')
+        user2 = User(username='valid_username2')
+        friendship = Friendship(actor=user1, target=user2)
+
+        self.assertEqual(str(friendship), "valid_username1 and valid_username2 are now friends")
+
+    def test_mini_venmo__create_user(self):
+        venmo = MiniVenmo()
+        user = venmo.create_user("Bobby", 5.00, "4111111111111111")
+
+        self.assertEqual(user.username, "Bobby")
+        self.assertEqual(user.balance, 5.00)
+        self.assertEqual(user.credit_card_number, "4111111111111111")
+
+    def test_mini_venmo__render_feed(self):
+        venmo = MiniVenmo()
+        user1 = venmo.create_user("Bobby", 5.00, "4111111111111111")
+        user2 = venmo.create_user("Carol", 10.00, "4242424242424242")
+
+        user1.pay(user2, 5.00, "Coffee")
+        venmo.render_feed(user1.retrieve_feed())
+
     def test_this_works(self):
         with self.assertRaises(UsernameException):
             raise UsernameException()
