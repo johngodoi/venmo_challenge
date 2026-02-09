@@ -227,6 +227,13 @@ class TestUser(unittest.TestCase):
         with self.assertRaises(PaymentException):
             user1.pay(user2, -10.00, "Invalid payment with negative amount")
 
+    def test_payment_validation__no_credit_card(self):
+        user1 = User(username='valid_username1')
+        user2 = User(username='valid_username2')
+
+        with self.assertRaises(PaymentException):
+            user1.pay(user2, 10.00, "Invalid payment with no credit card")
+
     def test_this_works(self):
         with self.assertRaises(UsernameException):
             raise UsernameException()
