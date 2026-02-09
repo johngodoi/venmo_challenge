@@ -323,6 +323,14 @@ class TestUser(unittest.TestCase):
         with self.assertRaises(CreditCardException):
             user.add_credit_card(credit_card_number='4242424242424242')
 
+    def test_credit_card_validation__valid_card(self):
+        user = User(username='valid_username')
+
+        try:
+            user.add_credit_card(credit_card_number='4111111111111111')
+        except CreditCardException:
+            self.fail("CreditCardException raised unexpectedly!")
+
     def test_this_works(self):
         with self.assertRaises(UsernameException):
             raise UsernameException()
