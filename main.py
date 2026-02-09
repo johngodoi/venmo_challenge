@@ -207,6 +207,11 @@ class TestUser(unittest.TestCase):
         with self.assertRaises(UsernameException):
             User(username='invalid username')
 
+    def test_credit_card_validation(self):
+        user = User(username='valid_username')
+        with self.assertRaises(CreditCardException):
+            user.add_credit_card(credit_card_number='1234567890123456')
+
     def test_this_works(self):
         with self.assertRaises(UsernameException):
             raise UsernameException()
