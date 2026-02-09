@@ -254,6 +254,15 @@ class TestUser(unittest.TestCase):
         except PaymentException:
             self.fail("PaymentException raised unexpectedly!")
 
+    def test_friendship_validation(self):
+        user1 = User(username='valid_username1')
+        user2 = User(username='valid_username2')
+
+        user1.add_friend(user2)
+
+        self.assertIn(user2, user1.friends)
+        self.assertIn(user1, user2.friends)
+
     def test_this_works(self):
         with self.assertRaises(UsernameException):
             raise UsernameException()
