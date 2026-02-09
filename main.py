@@ -289,6 +289,19 @@ class TestUser(unittest.TestCase):
         self.assertEqual(feed[0].target, user2)
         self.assertEqual(feed[0].note, "Test payment")
 
+    def test_friendship_feed(self):
+        user1 = User(username='valid_username1')
+        user2 = User(username='valid_username2')
+
+        user1.add_friend(user2)
+
+        feed = user1.retrieve_feed()
+
+        self.assertEqual(len(feed), 1)
+        self.assertIsInstance(feed[0], Friendship)
+        self.assertEqual(feed[0].actor, user1)
+        self.assertEqual(feed[0].target, user2)
+
     def test_this_works(self):
         with self.assertRaises(UsernameException):
             raise UsernameException()
